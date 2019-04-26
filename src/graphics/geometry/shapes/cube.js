@@ -18,17 +18,26 @@ class Cube extends Geometry {
       this.vertices = this.generateCubeVertices();
       this.faces = {0: this.vertices};
 
-      this.rotationMatrix = new Matrix4();
-      //this.rotationMatrix.setRotate(15,50,50,0);
-    this.rotationMatrix.setRotate(.1,50,50,1);
-      // this.translationMatrix = new Matrix4();
-      // this.translationMatrix.setTranslate(0,0.05,0);
+      var x = (this.x/canvas.width)*2-1;
+      var y = (this.y/canvas.height)*-2+1;
+      var z = 0.5;
 
-      this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
-      // this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
-    
-  
-    //   this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
+
+    //    this.translationMatrix = new Matrix4();
+    //    this.translationMatrix.setTranslate(x, y, 0);
+    //    this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+
+    //  //  Rotate the matrix around object's center
+       this.rotationMatrix = new Matrix4();
+           this.rotationMatrix.setRotate(-55, 0, 1, 1);
+      // this.rotationMatrix.setRotate(-25, 270,270, 0);
+       this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
+
+    //  //  Translate object back for proper rotation
+    //    this.translationMatrix.setTranslate(-x, -y, 0);
+    //    this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
+    //    this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix); 
+
       // CALL THIS AT THE END OF ANY SHAPE CONSTRUCTOR
       this.interleaveVertices();
   }
@@ -36,12 +45,13 @@ class Cube extends Geometry {
   generateCubeVertices() {
       var vertices = []
 
+      var size = document.getElementById("size").value/7;
       // convert to gl coordinates
       var x = (this.x/canvas.width)*2-1;
       var y = (this.y/canvas.height)*-2+1;
-      var z = 0.5;
+      var z = size;
 
-      var size = document.getElementById("size").value/15;
+      console.log(x + " " + y + " " +size);
 
       // front face
       var vertex1 = new Vertex( x+size, y+size, z);  // v0 
@@ -137,7 +147,27 @@ class Cube extends Geometry {
   }
 
   render() {
+      // Object's gl coordinates
+       var x = (this.x/canvas.width)*2-1;
+       var y = (this.y/canvas.height)*-2+1;
+
+       // Translate origin to center of the object and update matrix
+       this.translationMatrix = new Matrix4();
+       this.translationMatrix.setTranslate(x, y, 0);
+       this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+
+       // Rotate the matrix around object's center
+       this.rotationMatrix = new Matrix4();
+       this.rotationMatrix.setRotate(-1, 0, 1, 0);
        this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
+
+       // Translate object back for proper rotation
+       this.translationMatrix.setTranslate(-x, -y, 0);
+       this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
+       this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);  
+
+
+      //  this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
 
        this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
   }

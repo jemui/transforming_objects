@@ -17,29 +17,7 @@ class Square extends Geometry {
 
       this.vertices = this.generateSquareVertices();
       this.faces = {0: this.vertices};
-                // {1: [3,4,5]}
-      this.rot = 5;
-
-      this.identityMatrix = new Matrix4();
-      this.identityMatrix.setIdentity();
-
-     // Rotate about the z axis
-     this.rotationMatrix = new Matrix4();
-     this.rotationMatrix.setRotate(-1,0,0,1);
-
-   //   this.translationMatrix = new Matrix4();
-    //  this.translationMatrix.setTranslate(1.0,0.05,0);
-
-
-/*
-Easy way of building the rotation matrix:
-
-    Start with an identity matrix
-    Translate the matrix by -centre of the object
-    Rotate the matrix by the desired amount
-    Translate the matrix by centre of the object
-    Use the resulting matrix to transform the object that you desire to rotate
-*/
+      this.rot = 0;   
 
       // CALL THIS AT THE END OF ANY SHAPE CONSTRUCTOR
       this.interleaveVertices();
@@ -53,21 +31,9 @@ Easy way of building the rotation matrix:
       var y = (this.y/canvas.height)*-2+1;
       var z = 0.0;
 
-      var size = document.getElementById("size").value/15;
+      var size = document.getElementById("size").value/7;
 
-      console.log(x + " " + y);
-      // rotate object around center
-      this.translationMatrix = new Matrix4();
-      this.translationMatrix.setTranslate(x, y, 0);
-      this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
-      
-      // var xR = (x*y) + (y*x);
-      // var yR = (y*y) - (x*x);
-
-    //  this.rotationMatrix = new Matrix4();
-      //this.rotationMatrix.setRotate(3, x, y, 0); // close
-     // this.rotationMatrix.setRotate(3, xR, yR, 0);
-//  console.log(Math.cos(x));
+      // Vertices
       var vertex1 = new Vertex( x+size, y+size, z);
       var vertex2 = new Vertex( x-size, y+size , z);
       var vertex3 = new Vertex( x-size, y-size, z);
@@ -85,11 +51,27 @@ Easy way of building the rotation matrix:
       return vertices;
   }
 
-  // rotate the square 
+  // Rotates the square every frame
   render() {
-//      this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
-  //    this.modelMatrix = this.modelMatrix.multiply(this.identityMatrix);
-      this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
-      this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
+    // Object's gl coordinates
+    var x = (this.x/canvas.width)*2-1;
+    var y = (this.y/canvas.height)*-2+1;
+
+    // Translate origin to center of the object and update matrix
+    this.translationMatrix = new Matrix4();
+    this.translationMatrix.setTranslate(x, y, 0);
+    this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+
+    // Rotate the matrix around object's center
+    this.rotationMatrix = new Matrix4();
+    this.rotationMatrix.setRotate(-0.5, 0, 0, 1);
+    this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
+
+    // Translate object back for proper rotation
+    this.translationMatrix.setTranslate(-x, -y, 0);
+    this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
+    this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);  
+
+    this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
   }
 }
