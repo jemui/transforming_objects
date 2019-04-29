@@ -31,7 +31,7 @@ class Square extends Geometry {
       var y = (this.y/canvas.height)*-2+1;
       var z = 0.0;
 
-      var size = document.getElementById("size").value/7;
+      var size = document.getElementById("size").value/10;
 
       // Vertices
       var vertex1 = new Vertex( x+size, y+size, z);

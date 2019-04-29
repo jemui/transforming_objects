@@ -32,7 +32,7 @@ class Circle extends Geometry {
       var y = (this.y/canvas.height)*-2+1;
       var z = 0.0;
 
-      var r = document.getElementById("size").value/7;
+      var r = document.getElementById("size").value/10;
       var p = 6*Math.PI;
 
       var delta = (2*Math.PI) / numVert;
@@ -57,11 +57,18 @@ class Circle extends Geometry {
   }
 
   render() {
+      var transX = (Math.random()*0.08)-0.04;
+      var transY = (Math.random()*0.08)-0.04;
+
       // Create translation matrix
       this.translationMatrix = new Matrix4();
-      this.translationMatrix.setTranslate((Math.random()*0.008)-0.004,(Math.random()*0.008)-0.004,0);
 
+      this.translationMatrix.setTranslate(transX/15,transY/15,0);
       this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+
+      this.translationMatrix.setTranslate(transX/15,transY/15,0);
+      this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+
       this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
   }
 }

@@ -22,21 +22,10 @@ class Cube extends Geometry {
       var y = (this.y/canvas.height)*-2+1;
       var z = 0.5;
 
-
-    //    this.translationMatrix = new Matrix4();
-    //    this.translationMatrix.setTranslate(x, y, 0);
-    //    this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
-
-    //  //  Rotate the matrix around object's center
-       this.rotationMatrix = new Matrix4();
-           this.rotationMatrix.setRotate(-55, 0, 1, 1);
-      // this.rotationMatrix.setRotate(-25, 270,270, 0);
-       this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
-
-    //  //  Translate object back for proper rotation
-    //    this.translationMatrix.setTranslate(-x, -y, 0);
-    //    this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
-    //    this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix); 
+      // Set initial position to tilt cube
+      this.rotationMatrix = new Matrix4();
+      this.rotationMatrix.setRotate(-45, 1, 0, 0);
+      this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
 
       // CALL THIS AT THE END OF ANY SHAPE CONSTRUCTOR
       this.interleaveVertices();
@@ -45,7 +34,9 @@ class Cube extends Geometry {
   generateCubeVertices() {
       var vertices = []
 
-      var size = document.getElementById("size").value/7;
+      // avoid clipping by dividing by a number greater than size
+      var size = document.getElementById("size").value/10;
+
       // convert to gl coordinates
       var x = (this.x/canvas.width)*2-1;
       var y = (this.y/canvas.height)*-2+1;
@@ -156,18 +147,15 @@ class Cube extends Geometry {
        this.translationMatrix.setTranslate(x, y, 0);
        this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
 
-       // Rotate the matrix around object's center
+       // Rotate the object
        this.rotationMatrix = new Matrix4();
-       this.rotationMatrix.setRotate(-1, 0, 1, 0);
+       this.rotationMatrix.setRotate(0.5, 1, 1, 0);
        this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
 
        // Translate object back for proper rotation
        this.translationMatrix.setTranslate(-x, -y, 0);
        this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
        this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);  
-
-
-      //  this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
 
        this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
   }

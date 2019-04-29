@@ -1,5 +1,3 @@
-var count = 0;
-var count2 = 0;
 /**
  * Specifies a triangle. A subclass of geometry.
  *
@@ -32,7 +30,7 @@ class Triangle extends Geometry {
       var x = (this.x/canvas.width)*2-1;
       var y = (this.y/canvas.height)*-2+1;
 
-      var size = document.getElementById("size").value/7;
+      var size = document.getElementById("size").value/10;
 
       console.log(x + " " + y + " size: "+ size);
 
@@ -48,56 +46,54 @@ class Triangle extends Geometry {
       return vertices;
    }
 
+   scaleUp() {
+           // Convert to gl coordinates
+           var x = (this.x/canvas.width)*2-1;
+           var y = (this.y/canvas.height)*-2+1;
+
+           // Translate origin to triangle's center
+           this.translationMatrix.setTranslate(x, y, 0);
+           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+
+           // Scale triangle up at triangle's center
+           this.scalingMatrix.setScale(1.025, 1.025, 0);
+           this.modelMatrix = this.modelMatrix.multiply(this.scalingMatrix);
+
+           // Translate triangle back
+           this.translationMatrix.setTranslate(-x, -y, 0);
+           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix); 
+    }
+    scaleDown() {
+           var x = (this.x/canvas.width)*2-1;
+           var y = (this.y/canvas.height)*-2+1;
+
+           // Translate origin to triangle's center
+           this.translationMatrix.setTranslate(x, y, 0);
+           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+
+           // Scale triangle down at triangle's center
+           this.scalingMatrix.setScale(0.975, 0.975, 0);
+           this.modelMatrix = this.modelMatrix.multiply(this.scalingMatrix);
+
+           // Translate triangle back
+           this.translationMatrix.setTranslate(-x, -y, 0);
+           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);  
+    }
+
    render() {
-       // convert to gl coordinates
+       // Convert to gl coordinates
        var x = (this.x/canvas.width)*2-1;
        var y = (this.y/canvas.height)*-2+1;
 
        // Create the translation and scaling matrix
        this.translationMatrix = new Matrix4();
        this.scalingMatrix = new Matrix4();
-
-       // Increment count to scale up
-       if(count != 10 && count2 == 0) {
-           // Translate origin to triangle's center
-           this.translationMatrix.setTranslate(x, y, 0);
-           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
-
-           // Scale triangle up at triangle's center
-           this.scalingMatrix.setScale(1.025, 1.025, 1.025);
-           this.modelMatrix = this.modelMatrix.multiply(this.scalingMatrix);
-
-           // Translate triangle back
-           this.translationMatrix.setTranslate(-x, -y, 0);
-           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);  
-           
-           count++;
-       } else {
-           // Start scaling down
-           count2++;
+     
+       if(count % 5 == 0 && count % 10 != 0) {
+           this.scaleUp();
        }
-
-       // Increment count2 to scale down
-       if(count2 != 10 && count == 10) {
-           // Translate origin to triangle's center
-           this.translationMatrix.setTranslate(x, y, 0);
-           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
-
-           // Scale triangle up at triangle's center
-           this.scalingMatrix.setScale(0.95, 0.95, 0.95);
-           this.modelMatrix = this.modelMatrix.multiply(this.scalingMatrix);
-
-           // Translate triangle back
-           this.translationMatrix.setTranslate(-x, -y, 0);
-           this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);  
-
-           count2++;
-       }
-
-       // Reset counters
-       if(count2 == 10) {
-           count = 0;
-           count2 = 0;
+       else if (count % 10 == 0) {
+           this.scaleDown();
        }
 
        this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);

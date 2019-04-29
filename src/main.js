@@ -1,4 +1,5 @@
 var shader = null;
+var count = 0;
 
 function main() {
   // Retrieve the canvas from the HTML document
@@ -26,22 +27,15 @@ function main() {
   var idMatrix = new Matrix4();
   shader.addUniform("u_ModelMatrix", "mat4", idMatrix.elements);
 
-
-
   // Initialize renderer with scene and camera
   renderer = new Renderer(gl, scene, null);
   renderer.start();
 
-  // var tick = function() {
-  //   requestAnimationFrame(tick);
-  // }
-  // tick();
-
+  // Update global counter for fluctuating triangles
+  var tick = function() {
+    count++;
+    requestAnimationFrame(tick);
+  }
+  tick();
   
 }
-
-// function draw(gl, idMatrix, u_ModelMatrix){
-//   //main();
-//   gl.uniformMatrix4fv( u_ModelMatrix, false, idMatrix.elements);
-//   gl.clear(gl.COLOR_BUFFER_BIT);
-// }

@@ -20,7 +20,8 @@ class InputHandler {
 
       // Mouse Events
       this.canvas.onmousedown = function(ev) { _inputHandler.click(ev) };
-      this.canvas.onmousemove = function(ev) { };
+      this.canvas.onmousemove = function(ev) { _inputHandler.move(ev) };
+      this.canvas.onmouseup = function(ev) { _inputHandler.release(ev) };
 
       // Button Events
       document.getElementById('fileLoad').onclick = function() { _inputHandler.readSelectedFile() };
@@ -52,8 +53,6 @@ class InputHandler {
 
         fileReader.readAsText(objFile);
         fileReader.onloadend = function() {
-            // alert(fileReader.result);
-
             var customObj = new CustomOBJ(shader, fileReader.result);
             console.log(customObj);
             _inputHandler.scene.addGeometry(customObj);
@@ -75,14 +74,7 @@ class InputHandler {
         // each triangle should have its own function call to update itself
         if(triangle == true && document.getElementById("tri").innerHTML == "true") {
             var shape = new Triangle(shader,ev.clientX, ev.clientY);
-            this.scene.addGeometry(shape);
-
-            // var render = function () {
-            //     requestAnimationFrame(render);
-
-            //     // Retrieve the canvas from the HTML document
-            //     canvas = document.getElementById("webgl");
-        
+            this.scene.addGeometry(shape);        
         } 
         else if(document.getElementById("sqr").innerHTML == "true") {
             var shape = new Square(shader,ev.clientX, ev.clientY);

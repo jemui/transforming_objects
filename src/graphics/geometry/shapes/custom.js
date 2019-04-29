@@ -187,7 +187,17 @@ class CustomOBJ extends Geometry {
    */
   scaleOBJToFitOnScreen(scaleValue) {
     var scaleMatrix = new Matrix4();
-    scaleMatrix.setScale(scaleValue, scaleValue, scaleValue);
+    scaleMatrix.setScale(scaleValue/2, scaleValue/2, scaleValue/2);
     this.modelMatrix = scaleMatrix.multiply(this.modelMatrix);
+  }
+
+  // Rotate the object
+  render() {
+
+       this.rotationMatrix = new Matrix4();
+       this.rotationMatrix.setRotate(1, 0, 1, 0);
+       this.modelMatrix = this.modelMatrix.multiply(this.rotationMatrix);
+
+       this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
   }
 }
