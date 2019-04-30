@@ -89,12 +89,11 @@ class Triangle extends Geometry {
        this.translationMatrix = new Matrix4();
        this.scalingMatrix = new Matrix4();
      
-       if(count % 5 == 0 && count % 10 != 0) {
+       if(count < 15)
            this.scaleUp();
-       }
-       else if (count % 10 == 0) {
+       else 
            this.scaleDown();
-       }
+    
 
        this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);
    }

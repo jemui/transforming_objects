@@ -1,5 +1,6 @@
 var shader = null;
 var count = 0;
+var timer = 0;
 
 function main() {
   // Retrieve the canvas from the HTML document
@@ -34,6 +35,11 @@ function main() {
   // Update global counter for fluctuating triangles
   var tick = function() {
     count++;
+    timer++;
+
+    if(count == 30) 
+      count = 0;
+
     requestAnimationFrame(tick);
   }
   tick();

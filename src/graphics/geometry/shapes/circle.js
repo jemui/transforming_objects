@@ -1,3 +1,6 @@
+var transX = (Math.random()*0.008)-0.004;
+var transY = (Math.random()*0.008)-0.004;
+
 /**
  * Specifies a Circle. A subclass of geometry.
  *
@@ -57,16 +60,19 @@ class Circle extends Geometry {
   }
 
   render() {
-      var transX = (Math.random()*0.08)-0.04;
-      var transY = (Math.random()*0.08)-0.04;
+
 
       // Create translation matrix
       this.translationMatrix = new Matrix4();
+      this.translationMatrix.setTranslate(transX,transY,0);
 
-      this.translationMatrix.setTranslate(transX/15,transY/15,0);
-      this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
+      // reset timer and x and y translate variables
+      if(timer >= 30) {
+          timer = 0;
 
-      this.translationMatrix.setTranslate(transX/15,transY/15,0);
+          transX = (Math.random()*0.008)-0.004;
+          transY = (Math.random()*0.008)-0.004;
+      }
       this.modelMatrix = this.modelMatrix.multiply(this.translationMatrix);
 
       this.shader.setUniform("u_ModelMatrix", this.modelMatrix.elements);

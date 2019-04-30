@@ -18,10 +18,6 @@ class Cube extends Geometry {
       this.vertices = this.generateCubeVertices();
       this.faces = {0: this.vertices};
 
-      var x = (this.x/canvas.width)*2-1;
-      var y = (this.y/canvas.height)*-2+1;
-      var z = 0.5;
-
       // Set initial position to tilt cube
       this.rotationMatrix = new Matrix4();
       this.rotationMatrix.setRotate(-45, 1, 0, 0);
